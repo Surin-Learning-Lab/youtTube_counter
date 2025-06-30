@@ -12,14 +12,12 @@
 
 GxEPD2_3C<GxEPD2_290_C90c, GxEPD2_290_C90c::HEIGHT> display(GxEPD2_290_C90c(EPD_SS, EPD_DC, EPD_RST, EPD_BUSY));
 
-
 unsigned long lastUpdate = 0;
 
 struct YouTubeStats {
   String subscribers;
   String views;
 };
-
 
 void connectWiFi() {
   WiFi.begin(ssid, password);
@@ -33,7 +31,7 @@ void connectWiFi() {
 YouTubeStats fetchYouTubeStats() {
   YouTubeStats stats = {"N/A", "N/A"};
   String url = "https://www.googleapis.com/youtube/v3/channels?part=statistics&id=" + String(YT_CHANNEL_ID) + "&key=" + String(YT_API_KEY);
-  
+
   HTTPClient http;
   http.begin(url);
   int httpCode = http.GET();
@@ -64,40 +62,65 @@ void showStatsOnDisplay(const YouTubeStats& stats) {
   display.firstPage();
   do {
     display.fillScreen(GxEPD_WHITE);
+
+    // Left red area
+    int screenWidth = display.width();   // 296
+    int screenHeight = display.height(); // 128
+    int redAreaWidth = screenWidth * 2 / 3;
+    display.fillRect(0, 0, redAreaWidth, screenHeight, GxEPD_RED);
+
+    // YouTube triangle
+    int centerX = redAreaWidth / 2;
+    int centerY = screenHeight / 2;
+    int triSize = 30;
+    display.fillTriangle(
+      centerX - triSize / 2, centerY - triSize,
+      centerX - triSize / 2, centerY + triSize,
+      centerX + triSize, centerY,
+      GxEPD_WHITE
+    );
+
+    // Font settings
     display.setFont(&FreeSansBold9pt7b);
     display.setTextColor(GxEPD_BLACK);
 
-    display.setCursor(20, 50);
-    display.print("Subscribers:");
-    display.setCursor(180, 50);
+    // Right-side boxes
+    int boxX = redAreaWidth + 5;
+    int boxWidth = screenWidth - boxX - 5;
+    int boxHeight = 50;
+
+    // SUBS box
+    int subsY = 10;
+    display.drawRect(boxX, subsY, boxWidth, boxHeight, GxEPD_BLACK);
+    display.setCursor(boxX + 10, subsY + 18);
+    display.print("SUBS:");
+    display.setCursor(boxX + 10, subsY + 40);
     display.print(stats.subscribers);
 
-    display.setCursor(20, 90);
-    display.print("Views:");
-    display.setCursor(180, 90);
+    // VIEWS box
+    int viewsY = subsY + boxHeight + 10;
+    display.drawRect(boxX, viewsY, boxWidth, boxHeight, GxEPD_BLACK);
+    display.setCursor(boxX + 10, viewsY + 18);
+    display.print("VIEWS:");
+    display.setCursor(boxX + 10, viewsY + 40);
     display.print(stats.views);
 
   } while (display.nextPage());
 }
+
 
 void setup() {
   Serial.begin(115200);
   connectWiFi();
   YouTubeStats stats = fetchYouTubeStats();
   showStatsOnDisplay(stats);
-
-  // Sleep for 15 minutes (optional)
-  // esp_sleep_enable_timer_wakeup(15 * 60 * 1000000ULL);
-  // esp_deep_sleep_start();
-
-  
+  lastUpdate = millis();
 }
 
 void loop() {
-    if (millis() - lastUpdate > 1 * 60 * 1000UL) { // 15 minutes
+  if (millis() - lastUpdate > 5 * 60 * 1000UL) { // every 5 minutes
     YouTubeStats stats = fetchYouTubeStats();
     showStatsOnDisplay(stats);
     lastUpdate = millis();
   }
 }
-
