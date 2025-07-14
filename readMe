@@ -1,0 +1,104 @@
+# 📺 YouTube Stats Counter with ESP32 and E-Paper Display
+
+This project shows how to build a real-time YouTube subscriber and view counter using an ESP32 microcontroller, a 2.9-inch tri-color e-paper display, and the YouTube Data API. The device is housed in a 3D-printed case and powered by a rechargeable Li-ion battery. All code is written using the Arduino IDE.
+
+---
+
+## 🔧 Features
+
+- Live subscriber and view count updates using the YouTube API
+- Battery-powered with optional tilt-switch shutdown
+- 2.9" e-paper display for ultra-low power use
+- Over-the-air (OTA) update support
+- Custom 3D-printed housing and modular design
+
+---
+
+## 🧰 Included Files
+
+| File                          | Description                                           |
+|------------------------------|-------------------------------------------------------|
+| `main.ino`                   | Arduino sketch for ESP32 and e-paper display          |
+| `secrets.h`                  | Contains placeholders for API key, SSID, etc.         |
+| `wiring-diagram.fzz`         | Fritzing wiring diagram                               |
+| `case_design.f3d`            | Fusion 360 design file for the enclosure              |
+| `case_print.stl`             | STL file for 3D printing the housing                  |
+
+> ⚠️ **Note:** The `secrets.h` file includes placeholder values like `@SSID@`, `@API_KEY@`, `@CHANNEL_ID@`, and `xOTAPASSWORDx`. You must replace these with your actual credentials to use the project.
+
+---
+
+## 📦 Required Components
+
+- ESP32 Development Board
+- 2.9" Tri-color e-paper display (GxEPD2-compatible)
+- KY-020 Tilt Switch or Ball Switch (optional)
+- 10k ohm resistors (for voltage divider)
+- Li-ion battery
+- LiPo charging module (e.g. TP4056)
+- 3D-printed case
+
+---
+
+## 🔌 Wiring (ESP32 to E-Paper)
+
+| ESP32 Pin   | E-Paper Pin       |
+|-------------|-------------------|
+| GPIO 4      | BUSY              |
+| GPIO 16     | RST               |
+| GPIO 17     | D/C               |
+| GPIO 5      | CS                |
+| GPIO 18     | SCK               |
+| GPIO 23     | MOSI              |
+| GND         | GND               |
+| 5V          | VCC               |
+
+---
+
+## 📶 Setup Instructions
+
+1. **Clone this repository.**
+2. **Open `main.ino` in the Arduino IDE.**
+3. **Install required libraries:**
+   - GxEPD2
+   - Adafruit GFX
+   - ArduinoJson
+   - WiFi
+4. **Edit `secrets.h`**  
+   Replace the placeholders with your actual:
+   - Wi-Fi SSID and password
+   - YouTube API Key
+   - YouTube Channel ID
+   - OTA Password (optional)
+
+5. **Upload the code to your ESP32 using the Arduino IDE.**
+6. **Power the device and watch it display live stats!**
+
+---
+
+## 🖨️ Printing the Case
+
+- Use the included `case_print.stl` file with any 3D printer (tested on Anycubic printers).
+- Fusion 360 file `case_design.f3d` is provided for customization.
+
+---
+
+## 📸 Screenshots
+
+*(Add screenshots of the final build and display in action)*
+
+---
+
+## 📜 License
+
+This project is open-source under the MIT License.
+
+---
+
+## 🙌 Credits
+
+Created by **Surin Learning Lab / surin-sandbox**  
+For more educational IoT and microcontroller content, visit [surinlearninglab.com](https://surinlearninglab.com)  
+If you’re interested in learning basic coding and circuits using an Arduino Uno, please check out our courses at [surin-sandbox.onrender.com](https://surin-sandbox.onrender.com)
+
+---
